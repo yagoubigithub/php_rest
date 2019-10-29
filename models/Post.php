@@ -54,26 +54,26 @@ public function read(){
 
      return $stm;
 }
-  // GET single post
 
+  // GET single post
   public function read_single(){
  //create query
  $query = 'SELECT 
- c.name as category_name,
- p.id,
- p.category_id,
- p.title,
- p.body,
- p.author,
- p.created_at
-    FROM  
-    ' . $this->table . ' p 
-    LEFT JOIN 
-    categories c ON p.category_id = c.id 
-    WHERE 
-    p.id = ?
-    LIMIT 0,1
-    ';
+                c.name as category_name,
+                p.id,
+                p.category_id,
+                p.title,
+                p.body,
+                p.author,
+                p.created_at
+           FROM  
+                ' . $this->table . ' p 
+                LEFT JOIN 
+                categories c ON p.category_id = c.id 
+                WHERE 
+                p.id = ?
+                LIMIT 0,1
+                ';
 
   // Prepare Statement
   $stm = $this->conn->prepare($query);
@@ -94,5 +94,52 @@ public function read(){
 
   }
 
+
+
+
+// Create post
+
+  public function create() {
+
+    //  Create query
+
+    $query = 'INSERT INTO ' . 
+    $this->table . '
+    SET 
+    title = :title,
+    body = :body,
+    author= :author,
+    category_id = :category_id';
+
+     // Prepare Statement
+     $stm = $this->conn->prepare($query);
+
+     
+
+     //Clean data
+     $this->title = htmlspecialchars(strip_tags($this->title));
+     $this->body = htmlspecialchars(strip_tags($this->body));
+     $this->author = htmlspecialchars(strip_tags($this->author));
+     $this->category_id = htmlspecialchars(strip_tags($this->category_id));
+    
+
+
+     //  Bind data
+
+     $stm->bindParam(':title', $this->title);
+     $stm->bindParam(':body', $this->body);
+     $stm->bindParam(':author', $this->author);
+     $stm->bindParam(':category_id', $this->category_id);
+    
+     if($stm->execute()){
+       return true;
+     }
+
+     //Print error if somthing goes wrong
+     printf('Error : %s.\n', $stm->error);
+
+
+     return false;
+  }
 }
 ?>
