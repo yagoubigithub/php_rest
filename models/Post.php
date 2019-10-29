@@ -141,5 +141,56 @@ public function read(){
 
      return false;
   }
+
+
+
+  // Update post
+
+  public function update() {
+
+    //  Create query
+
+    $query = 'UPDATE  ' . 
+    $this->table . '
+    SET 
+    title = :title,
+    body = :body,
+    author= :author,
+    category_id = :category_id 
+    WHERE 
+    id=:id';
+
+     // Prepare Statement
+     $stm = $this->conn->prepare($query);
+
+     
+
+     //Clean data
+     $this->title = htmlspecialchars(strip_tags($this->title));
+     $this->body = htmlspecialchars(strip_tags($this->body));
+     $this->author = htmlspecialchars(strip_tags($this->author));
+     $this->category_id = htmlspecialchars(strip_tags($this->category_id));
+     $this->id = htmlspecialchars(strip_tags($this->id));
+    
+
+
+     //  Bind data
+
+     $stm->bindParam(':title', $this->title);
+     $stm->bindParam(':body', $this->body);
+     $stm->bindParam(':author', $this->author);
+     $stm->bindParam(':category_id', $this->category_id);
+     $stm->bindParam(':id', $this->id);
+    
+     if($stm->execute()){
+       return true;
+     }
+
+     //Print error if somthing goes wrong
+     printf('Error : %s.\n', $stm->error);
+
+
+     return false;
+  }
 }
 ?>
