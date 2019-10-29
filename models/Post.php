@@ -192,5 +192,29 @@ public function read(){
 
      return false;
   }
+  public function delete(){
+
+    // Create query
+
+    $query = 'DELETE FROM ' . $this->table . ' WHERE id = :id';
+      // Prepare Statement
+      $stm = $this->conn->prepare($query);
+
+      // clean the id
+      $this->id = htmlspecialchars(strip_tags($this->id));
+
+      // bind the id
+      $stm->bindParam(':id', $this->id);
+    
+     if($stm->execute()){
+       return true;
+     }
+
+     //Print error if somthing goes wrong
+     printf('Error : %s.\n', $stm->error);
+
+
+     return false;
+}
 }
 ?>
